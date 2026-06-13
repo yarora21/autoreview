@@ -40,6 +40,17 @@ class Finding(BaseModel):
     confidence: float = Field(ge=0, le=1)
 
 
+class CodeChunk(BaseModel):
+    """A function, class, or module-level block extracted from source code."""
+    file_path: str
+    qualified_name: str  # e.g. "MyClass.my_method" or "top_level_func"
+    kind: str  # "function", "class", or "module"
+    start_line: int
+    end_line: int
+    content: str
+    docstring: Optional[str] = None
+
+
 class ReviewResult(BaseModel):
     pr_url: str
     findings: list[Finding] = []

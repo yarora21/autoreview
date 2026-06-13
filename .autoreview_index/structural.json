@@ -1,0 +1,274 @@
+{
+  "call_graph": {
+    "main": [
+      "group"
+    ],
+    "review_pr": [
+      "command",
+      "review",
+      "add_row",
+      "Table",
+      "argument",
+      "len",
+      "print",
+      "add_column",
+      "Console",
+      "get_pr"
+    ],
+    "index": [
+      "command",
+      "index_repo",
+      "argument",
+      "print",
+      "Path",
+      "Console"
+    ],
+    "search": [
+      "query",
+      "append",
+      "zip",
+      "CodeChunk"
+    ],
+    "parse_pr_url": [
+      "search",
+      "ValueError",
+      "group",
+      "int"
+    ],
+    "_headers": [
+      "EnvironmentError",
+      "get"
+    ],
+    "fetch_pr_diff": [
+      "raise_for_status",
+      "get",
+      "_headers"
+    ],
+    "parse_diff": [
+      "split",
+      "startswith",
+      "group",
+      "search",
+      "splitlines",
+      "len",
+      "DiffChunk",
+      "int",
+      "append"
+    ],
+    "get_pr": [
+      "parse_pr_url",
+      "fetch_pr_diff",
+      "parse_diff"
+    ],
+    "_format_diff": [
+      "join",
+      "append"
+    ],
+    "_estimate_cost": [],
+    "review": [
+      "round",
+      "Anthropic",
+      "_estimate_cost",
+      "create",
+      "info",
+      "len",
+      "get",
+      "time",
+      "Finding",
+      "ReviewResult",
+      "append",
+      "_format_diff"
+    ],
+    "_call_name": [
+      "isinstance"
+    ],
+    "build_index": [
+      "StructuralIndex",
+      "rglob",
+      "index_file"
+    ],
+    "__init__": [
+      "Client"
+    ],
+    "index_file": [
+      "walk",
+      "str",
+      "add",
+      "isinstance",
+      "read_text",
+      "_call_name",
+      "parse",
+      "set"
+    ],
+    "callers_of": [
+      "items"
+    ],
+    "imports_of": [
+      "get",
+      "set"
+    ],
+    "_get_docstring": [
+      "child_by_field_name",
+      "decode"
+    ],
+    "_qualified_name": [
+      "child_by_field_name",
+      "append",
+      "decode",
+      "join",
+      "reversed"
+    ],
+    "chunk_file": [
+      "Parser",
+      "_get_docstring",
+      "discard",
+      "encode",
+      "join",
+      "strip",
+      "_qualified_name",
+      "visit",
+      "append",
+      "read_text",
+      "parse",
+      "sorted",
+      "range",
+      "splitlines",
+      "len",
+      "str",
+      "CodeChunk",
+      "decode",
+      "set"
+    ],
+    "visit": [
+      "_qualified_name",
+      "_get_docstring",
+      "range",
+      "discard",
+      "CodeChunk",
+      "decode",
+      "visit",
+      "append"
+    ],
+    "upsert": [
+      "model_dump",
+      "upsert"
+    ],
+    "count": [
+      "count"
+    ],
+    "index_repo": [
+      "dumps",
+      "time",
+      "VoyageEmbedder",
+      "rglob",
+      "items",
+      "VectorStore",
+      "mkdir",
+      "write_text",
+      "build_index",
+      "list",
+      "warning",
+      "extend",
+      "info",
+      "len",
+      "upsert",
+      "round",
+      "chunk_file",
+      "embed",
+      "resolve"
+    ],
+    "load_vector_store": [
+      "VectorStore",
+      "resolve"
+    ],
+    "load_structural": [
+      "read_text",
+      "loads",
+      "resolve"
+    ],
+    "embed": [
+      "embed"
+    ]
+  },
+  "import_index": {
+    "/Users/yasharora/Documents/agent-review-2/autoreview/__init__.py": [],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/cli.py": [
+      "rich.console.Console",
+      "autoreview.core.github_client.get_pr",
+      "rich.table.Table",
+      "dotenv.load_dotenv",
+      "autoreview.indexing.pipeline.index_repo",
+      "__future__.annotations",
+      "autoreview.indexing.embedder.VoyageEmbedder",
+      "pathlib.Path",
+      "autoreview.agents.reviewer.review",
+      "click",
+      "autoreview.indexing.pipeline.load_vector_store",
+      "logging"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/core/__init__.py": [],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/core/schemas.py": [
+      "pydantic.Field",
+      "enum.Enum",
+      "__future__.annotations",
+      "pydantic.BaseModel",
+      "typing.Optional"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/core/github_client.py": [
+      "autoreview.core.schemas.DiffChunk",
+      "re",
+      "httpx",
+      "__future__.annotations",
+      "os"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/agents/__init__.py": [],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/agents/reviewer.py": [
+      "autoreview.core.schemas.Finding",
+      "autoreview.core.schemas.DiffChunk",
+      "json",
+      "autoreview.core.schemas.ReviewResult",
+      "time",
+      "__future__.annotations",
+      "anthropic",
+      "pathlib.Path",
+      "logging"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/structural.py": [
+      "__future__.annotations",
+      "ast",
+      "pathlib.Path"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/chunker.py": [
+      "tree_sitter.Language",
+      "autoreview.core.schemas.CodeChunk",
+      "__future__.annotations",
+      "pathlib.Path",
+      "tree_sitter.Parser",
+      "tree_sitter_python"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/vector_store.py": [
+      "__future__.annotations",
+      "chromadb",
+      "autoreview.core.schemas.CodeChunk",
+      "pathlib.Path"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/__init__.py": [],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/pipeline.py": [
+      "json",
+      "autoreview.indexing.structural.build_index",
+      "time",
+      "__future__.annotations",
+      "autoreview.indexing.embedder.VoyageEmbedder",
+      "pathlib.Path",
+      "logging",
+      "autoreview.indexing.chunker.chunk_file",
+      "autoreview.indexing.vector_store.VectorStore"
+    ],
+    "/Users/yasharora/Documents/agent-review-2/autoreview/indexing/embedder.py": [
+      "__future__.annotations",
+      "abc.ABC",
+      "abc.abstractmethod",
+      "voyageai"
+    ]
+  }
+}
