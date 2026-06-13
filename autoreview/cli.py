@@ -11,6 +11,7 @@ from rich.table import Table
 
 from autoreview.core.github_client import get_pr
 from autoreview.agents.reviewer import review
+from autoreview.agents.graph import build_graph
 from autoreview.indexing.pipeline import index_repo, load_vector_store, load_structural
 from autoreview.indexing.embedder import VoyageEmbedder
 from autoreview.retrieval.retriever import retrieve
@@ -28,7 +29,8 @@ def main():
 @click.argument("pr_url")
 @click.option("--repo-path", default=None, help="Path to local repo index for RAG context.")
 @click.option("--no-rag", is_flag=True, help="Skip RAG retrieval and review the diff only.")
-def review_pr(pr_url: str, repo_path: str, no_rag: bool):
+@click.option("--single-agent", is_flag=True, help="Use single agent instead of parallel specialists.")
+def review_pr(pr_url: str, repo_path: str, no_rag: bool, single_agent: bool):
     """Review a GitHub PR."""
     from pathlib import Path
     console = Console()
@@ -48,7 +50,13 @@ def review_pr(pr_url: str, repo_path: str, no_rag: bool):
         context = ContextPack(diff_chunks=diff_chunks)
 
     console.print("Running review...")
-    result = review(pr_url, context)
+    if single_agent:
+        result = review(pr_url, context)
+    else:
+        graph = build_graph()
+        state = graph.invoke({"context": context, "findings": []})
+        from autoreview.core.schemas import ReviewResult
+        result = ReviewResult(pr_url=pr_url, findings=state["findings"])
 
     if not result.findings:
         console.print("[green]No issues found.[/green]")
