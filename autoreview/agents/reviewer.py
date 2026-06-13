@@ -8,6 +8,7 @@ from pathlib import Path
 import anthropic
 
 from autoreview.core.schemas import DiffChunk, Finding, ReviewResult
+from autoreview.retrieval.context_pack import ContextPack
 
 logger = logging.getLogger(__name__)
 
@@ -47,20 +48,12 @@ INPUT_COST_PER_M = 3.0
 OUTPUT_COST_PER_M = 15.0
 
 
-def _format_diff(chunks: list[DiffChunk]) -> str:
-    parts = []
-    for c in chunks:
-        parts.append(f"--- {c.file_path} (lines {c.start_line}-{c.end_line}) ---\n{c.content}")
-    return "\n".join(parts)
-
-
 def _estimate_cost(usage: anthropic.types.Usage) -> float:
     return (usage.input_tokens * INPUT_COST_PER_M + usage.output_tokens * OUTPUT_COST_PER_M) / 1_000_000
 
 
-def review(pr_url: str, chunks: list[DiffChunk], model: str = "claude-sonnet-4-20250514") -> ReviewResult:
+def review(pr_url: str, context: ContextPack, model: str = "claude-sonnet-4-20250514") -> ReviewResult:
     client = anthropic.Anthropic()
-    diff_text = _format_diff(chunks)
 
     start = time.time()
     response = client.messages.create(
@@ -69,7 +62,7 @@ def review(pr_url: str, chunks: list[DiffChunk], model: str = "claude-sonnet-4-2
         system=SYSTEM_PROMPT,
         tools=[FINDING_TOOL],
         tool_choice={"type": "tool", "name": "report_findings"},
-        messages=[{"role": "user", "content": f"Review this PR diff:\n\n{diff_text}"}],
+        messages=[{"role": "user", "content": f"Review this PR:\n\n{context.to_prompt_text()}"}],
     )
     latency = time.time() - start
 
