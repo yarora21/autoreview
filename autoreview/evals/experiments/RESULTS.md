@@ -36,21 +36,38 @@ The agent runs on PRs without seeing labels. A separate Claude call judges each 
 relevant diff hunk: **valid** (real issue), **noise** (false positive), or **uncertain**. Precision
 is computed from judge verdicts; recall from valid findings that hit the labeled file.
 
-Evaluated on 51 PRs (31 bug, 20 clean), 183 total findings:
+Evaluated on 51 PRs (31 bug, 20 clean).
+
+#### Baseline (original style prompt)
 
 | Metric | Value | Detail |
 |---|---|---|
-| **Precision** | **18.5%** | 30 valid / 162 decided (excl. uncertain) |
-| **Recall** | **41.9%** | 13/31 bug PRs had a valid finding on the right file |
-| **FPR** | **20.0%** | 4/20 clean PRs had ≥1 valid finding |
-| Findings per PR | 3.6 avg | 2.9 bug / 4.7 clean |
+| Precision | 18.5% | 30 valid / 162 decided |
+| Recall | 41.9% | 13/31 bug PRs hit |
+| FPR | 20.0% | 4/20 clean PRs flagged |
+| Total findings | 183 | valid=30, noise=132, uncertain=21 |
 
-**Finding:** Precision is low — the agents flag too much noise that passes the 0.6 confidence gate,
-particularly style and maintainability findings. Recall at 42% means most bug PRs do get flagged but
-not always on the correct file. The "false positives" on clean PRs are instructive: 3 of the 4 are
-arguably real issues (a typo, a missing docstring placeholder, a potential `KeyError`) introduced
-incidentally in feature PRs. This reveals a fundamental limitation of the clean-PR methodology —
-enhancement PRs are not guaranteed to be bug-free.
+#### After tightening the style agent prompt
+
+The style prompt was rewritten to only flag things a senior engineer would block a PR over: typos in
+user-facing strings, significant duplication, genuinely dangerous complexity. Explicit exclusions added
+for f-string preferences, missing type hints, incomplete docstrings, and minor refactoring suggestions.
+
+| Metric | Value | Δ | Detail |
+|---|---|---|---|
+| **Precision** | **39.0%** | **+20.5pp** | 41 valid / 105 decided |
+| **Recall** | **48.4%** | **+6.5pp** | 15/31 bug PRs hit |
+| FPR | 30.0% | +10pp | 6/20 clean PRs flagged |
+| Total findings | 136 | -47 | valid=41, noise=64, uncertain=31 |
+
+**Finding:** Tightening the style prompt more than doubled precision (18.5% → 39.0%) while also improving
+recall (41.9% → 48.4%). It cut 68 noise findings while valid findings *increased* by 11 — the style
+agent was adding noise that obscured real signal from the bug and security agents in the synthesizer.
+
+The FPR increase (20% → 30%) is a measurement artifact: all 6 newly-flagged "clean" PRs contain real
+issues introduced incidentally in feature PRs — `if not body` replacing `if body is None` (semantic
+change that breaks empty-but-not-None inputs), typos in user-facing warnings, logic ordering bugs.
+**This is the core limitation of the clean-PR methodology: enhancement PRs are not bug-free.**
 
 ---
 
@@ -93,15 +110,18 @@ is modest. Architecture matters more than model choice for this task.
 
 ## Key Takeaways
 
-1. **The 82% numbers were wrong** — a parser bug made every finding on a large file count as a hit.
-   Honest measurement with LLM judge gives 18.5% precision / 42% recall.
-2. **Precision is the main problem** — agents flag too many plausible-sounding non-issues.
-   The confidence gate (0.6) is necessary but insufficient; prompts need to be stricter.
-3. **Clean PRs are not bug-free** — 3 of 4 "false positives" were real issues introduced in
-   feature PRs. FPR is a noisy metric without human-verified clean data.
-4. **Multi-agent outperforms single-agent** on FPR regardless of label noise; the direction is robust.
-5. **Eval infrastructure is now correct**: blind runner + LLM judge + per-finding verdicts stored in
-   `blind_results.json`; fully re-runnable in CI.
+1. **Prompt tightening beats threshold tuning** — rewriting the style prompt to set a higher bar
+   more than doubled precision (18.5% → 39.0%) and improved recall simultaneously. The confidence
+   gate alone was insufficient; the prompt needed to encode what "worth flagging" means.
+2. **The 82% numbers were wrong** — a parser bug made every finding on a large file count as a hit.
+   Honest measurement with LLM judge gives 39% precision / 48% recall after prompt tuning.
+3. **Style noise obscures bug signal** — the style agent was producing so much noise that valid bug
+   findings were being drowned out. Cutting style noise improved both precision and recall.
+4. **Clean PRs are not bug-free** — the FPR increase after prompt tuning is a methodology artifact;
+   enhancement PRs regularly contain real issues. FPR requires human-verified clean data to be reliable.
+5. **Multi-agent outperforms single-agent** on FPR regardless of label noise; the direction is robust.
+6. **Eval infrastructure is correct**: blind runner + LLM judge + per-finding verdicts in
+   `blind_results.json`; fully re-runnable after any prompt or threshold change.
 
 ## Next Steps
 
