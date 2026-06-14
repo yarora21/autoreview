@@ -1,0 +1,388 @@
+[
+  {
+    "repo": "psf/requests",
+    "pr_number": 2306,
+    "pr_url": "https://github.com/psf/requests/pull/2306",
+    "label": "bug",
+    "bug_file": "test_requests.py",
+    "num_findings": 2,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "test_requests.py",
+        "start_line": 1511,
+        "end_line": 1518,
+        "description": "The test is adding an empty list `hooks=[]` to the PreparedRequest.prepare() call. This changes the test's behavior and may mask bugs in hook handling. An empty list is semantically different from the default behavior (likely None or not provided). If the copy() method doesn't properly handle empty hook lists, this test won't catch that bug. Additionally, this makes the test less representative of actual usage where hooks are either not specified or contain actual hook functions.",
+        "suggested_fix": "Remove the `hooks=[]` parameter. If the original test was failing due to hooks handling in copy(), the root cause in copy() should be fixed instead. The test should verify the default/typical usage pattern, not a potentially problematic edge case like empty lists.",
+        "confidence": 0.72
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "test_requests.py",
+        "start_line": 1511,
+        "end_line": 1518,
+        "description": "The test is adding an empty list `hooks=[]` to the PreparedRequest.prepare() call. This changes the test's behavior and may mask bugs in hook handling. An empty list is semantically different from the default behavior (likely None or not provided). If the copy() method doesn't properly handle empty hook lists, this test won't catch that bug. Additionally, this makes the test less representative of actual usage where hooks are either not specified or contain actual hook functions.",
+        "suggested_fix": "Remove the `hooks=[]` parameter. If the original test was failing due to hooks handling in copy(), the root cause in copy() should be fixed instead. The test should verify the default/typical usage pattern, not a potentially problematic edge case like empty lists.",
+        "confidence": 0.72
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2375,
+    "pr_url": "https://github.com/psf/requests/pull/2375",
+    "label": "bug",
+    "bug_file": "requests/packages/__init__.py",
+    "num_findings": 13,
+    "hit": true,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "critical",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 71,
+        "end_line": 76,
+        "description": "Logic error in sys.meta_path restoration. After filtering out VendorAlias instances and performing the import, the code attempts to restore sys.meta_path by appending any new items found during import. However, this logic is flawed: it iterates through the current sys.meta_path and appends items to real_meta_path that weren't in the original, but then unconditionally reassigns sys.meta_path to real_meta_path. This means if new VendorAlias instances were added during the import, they get appended to real_meta_path, but then sys.meta_path is overwritten entirely, potentially losing them or causing incorrect state. More critically, any items already in real_meta_path that were removed during the import are not restored.",
+        "suggested_fix": "The restoration logic should preserve all new items that were added during import while restoring the original items. Consider: (1) Keep the current logic to append new items to real_meta_path, OR (2) Better: after performing the import with a filtered meta_path, simply restore sys.meta_path = real_meta_path + [items that were added], ensuring all new items are preserved and the original state is maintained.",
+        "confidence": 0.75
+      },
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 61,
+        "end_line": 78,
+        "description": "Missing initialization of 'module' variable. If the code path reaches line 78 without entering the except block on line 79, and also doesn't enter the inner try block properly, the variable 'module' may not be defined before line 92 uses it. However, examining the control flow: line 54 checks if name is in sys.modules and returns early; then in the try block at line 56, __import__(name) is called and module is assigned at line 61. If __import__ succeeds, module is set. But if __import__ at line 61 succeeds and module assignment completes, then the finally block executes, and execution continues to line 92. Actually, the module variable should be defined. But there's a subtle bug: if the inner try block at line 59-61 raises an exception OTHER than ImportError (e.g., AttributeError), the finally block still executes, and then the outer except ImportError at line 79 doesn't catch it, so execution may jump elsewhere. More importantly: the module variable is assigned in line 61 inside the try block, but if the except ImportError at line 79 is triggered, the inner module assignment never happens, and control goes to lines 82-87 where real_name is computed and another __import__ is attempted. This looks correct. Let me reconsider: at line 92, module is used. It's either assigned at line 61 or line 86. This appears safe.",
+        "suggested_fix": "Upon review, the module variable flow is actually correct. Disregard this finding - the control flow ensures module is assigned before use at line 92.",
+        "confidence": 0.35
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 82,
+        "end_line": 88,
+        "description": "Incorrect module assignment after fallback import. When the code falls back to importing the 'real_name' (line 84), it calls __import__(real_name) and then assigns module = sys.modules[real_name]. However, this assignment happens unconditionally after the __import__ call succeeds. The problem is that __import__(real_name) succeeds but the actual module object returned by __import__ is not the module at sys.modules[real_name] in all cases. While typically __import__ updates sys.modules, the code assumes this. More critically: if __import__(real_name) succeeds, the module should be accessible via sys.modules[real_name]. But when this module (the non-vendored version) is added to sys.modules at line 92 under the vendored name, there's a potential issue: if real_name refers to a package like 'urllib3', then sys.modules[real_name] is the urllib3 module. But then at line 92, sys.modules[name] = module, where name is 'requests.packages.urllib3'. This creates an alias but may cause issues if the module's __name__ and __package__ attributes don't match the vendored name.",
+        "suggested_fix": "The assignment should verify the module was actually imported: ensure sys.modules[real_name] exists before using it, or use the return value of __import__ directly. Additionally, consider whether aliasing the module in sys.modules under a different name is the correct approach, as the module's internal attributes will not reflect the vendored path.",
+        "confidence": 0.5
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 26,
+        "end_line": 93,
+        "description": "The `load_module` method is too long and handles multiple concerns: validation, caching, meta_path manipulation, and fallback import logic. This makes it difficult to understand the control flow and test individual behaviors.",
+        "suggested_fix": "Break this method into smaller, focused helper methods such as `_validate_name()`, `_check_cache()`, `_import_as_vendor()`, and `_import_as_real()` to improve clarity and testability.",
+        "confidence": 0.8
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 38,
+        "end_line": 88,
+        "description": "The sys.meta_path manipulation logic (lines 51-72) is complex with nested try/finally blocks and list operations. The intent (temporarily removing VendorAlias instances) is obscured by the implementation details.",
+        "suggested_fix": "Extract the meta_path filtering and restoration logic into a dedicated helper method or context manager (e.g., `_temp_meta_path_without_vendor()`) to improve readability and reusability.",
+        "confidence": 0.75
+      },
+      {
+        "category": "style",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 27,
+        "end_line": 28,
+        "description": "Inconsistent attribute naming: `_vendor_name` and `_vendor_pkg` are instance variables but `__name__` is a module-level variable. The naming pattern could be clearer about what these represent.",
+        "suggested_fix": "Consider adding a docstring to the `__init__` method explaining what these attributes represent, or use more descriptive names like `_vendor_module_name` and `_vendor_package_prefix`.",
+        "confidence": 0.6
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 26,
+        "end_line": 93,
+        "description": "The `VendorAlias` class lacks a docstring explaining its purpose, how it works, and why this import aliasing approach is necessary. This is particularly important for non-obvious meta-path manipulation code.",
+        "suggested_fix": "Add a comprehensive class docstring explaining that this is a custom import hook for aliasing vendored packages, and clarify the fallback mechanism that attempts to import from the real package name if the vendored import fails.",
+        "confidence": 0.85
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 56,
+        "end_line": 72,
+        "description": "Magic list comprehension and meta_path manipulation without clear variable names for intermediate states. The logic for filtering and restoring meta_path is implicit and hard to follow.",
+        "suggested_fix": "Introduce named variables like `vendor_free_meta_path = [m for m in real_meta_path if not isinstance(m, VendorAlias)]` to make the intent clearer and easier to maintain.",
+        "confidence": 0.65
+      },
+      {
+        "category": "bug",
+        "severity": "critical",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 71,
+        "end_line": 76,
+        "description": "Logic error in sys.meta_path restoration. After filtering out VendorAlias instances and performing the import, the code attempts to restore sys.meta_path by appending any new items found during import. However, this logic is flawed: it iterates through the current sys.meta_path and appends items to real_meta_path that weren't in the original, but then unconditionally reassigns sys.meta_path to real_meta_path. This means if new VendorAlias instances were added during the import, they get appended to real_meta_path, but then sys.meta_path is overwritten entirely, potentially losing them or causing incorrect state. More critically, any items already in real_meta_path that were removed during the import are not restored.",
+        "suggested_fix": "The restoration logic should preserve all new items that were added during import while restoring the original items. Consider: (1) Keep the current logic to append new items to real_meta_path, OR (2) Better: after performing the import with a filtered meta_path, simply restore sys.meta_path = real_meta_path + [items that were added], ensuring all new items are preserved and the original state is maintained.",
+        "confidence": 0.75
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 38,
+        "end_line": 88,
+        "description": "The sys.meta_path manipulation logic (lines 51-72) is complex with nested try/finally blocks and list operations. The intent (temporarily removing VendorAlias instances) is obscured by the implementation details.",
+        "suggested_fix": "Extract the meta_path filtering and restoration logic into a dedicated helper method or context manager (e.g., `_temp_meta_path_without_vendor()`) to improve readability and reusability.",
+        "confidence": 0.75
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 26,
+        "end_line": 93,
+        "description": "The `VendorAlias` class lacks a docstring explaining its purpose, how it works, and why this import aliasing approach is necessary. This is particularly important for non-obvious meta-path manipulation code.",
+        "suggested_fix": "Add a comprehensive class docstring explaining that this is a custom import hook for aliasing vendored packages, and clarify the fallback mechanism that attempts to import from the real package name if the vendored import fails.",
+        "confidence": 0.85
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 56,
+        "end_line": 72,
+        "description": "Magic list comprehension and meta_path manipulation without clear variable names for intermediate states. The logic for filtering and restoring meta_path is implicit and hard to follow.",
+        "suggested_fix": "Introduce named variables like `vendor_free_meta_path = [m for m in real_meta_path if not isinstance(m, VendorAlias)]` to make the intent clearer and easier to maintain.",
+        "confidence": 0.65
+      },
+      {
+        "category": "style",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 27,
+        "end_line": 28,
+        "description": "Inconsistent attribute naming: `_vendor_name` and `_vendor_pkg` are instance variables but `__name__` is a module-level variable. The naming pattern could be clearer about what these represent.",
+        "suggested_fix": "Consider adding a docstring to the `__init__` method explaining what these attributes represent, or use more descriptive names like `_vendor_module_name` and `_vendor_package_prefix`.",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2216,
+    "pr_url": "https://github.com/psf/requests/pull/2216",
+    "label": "bug",
+    "bug_file": "requests/adapters.py",
+    "num_findings": 20,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "requests/adapters.py",
+        "start_line": 85,
+        "end_line": 89,
+        "description": "The logic for converting max_retries to a Retry object is incorrect. When max_retries == DEFAULT_RETRIES, it creates Retry(0, read=False) which disables all retries including connection retries. However, this should preserve the default behavior. Additionally, Retry.from_int() converts an integer to a Retry object using the format Retry(total), but the original code was wrapping the integer directly in Retry(). The conversion should use from_int() consistently, not conditionally.",
+        "suggested_fix": "Use 'self.max_retries = Retry.from_int(max_retries) if max_retries != DEFAULT_RETRIES else Retry(0, read=False)' OR better yet, always use Retry.from_int() for all integer inputs, since from_int() should handle the default case appropriately.",
+        "confidence": 0.85
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/retry.py",
+        "start_line": 268,
+        "end_line": 270,
+        "description": "The MaxRetryError is being raised with 'error or ResponseError(cause)' as the reason parameter. However, ResponseError(cause) is being instantiated with a string argument 'cause', but the ResponseError class definition doesn't show an __init__ that accepts a custom message parameter - it appears to be a simple exception class. This could result in an exception being raised during exception handling, or the ResponseError being constructed incorrectly without the intended message.",
+        "suggested_fix": "Verify that ResponseError can be instantiated with a string argument, or pass the cause as a named parameter or use a different approach to attach the cause information.",
+        "confidence": 0.75
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 213,
+        "end_line": 216,
+        "description": "In the _send_until_done method, when catching OpenSSL.SSL.WantWriteError and performing select.select() with a timeout, if the socket times out, a bare timeout() exception is raised. However, this timeout exception is not imported and the exception type is ambiguous - it could be the built-in timeout class or something else. This could cause an unhandled exception or incorrect behavior.",
+        "suggested_fix": "Import timeout from socket or use socket.timeout() explicitly. Verify that timeout() is the correct exception to raise in this context.",
+        "confidence": 0.7
+      },
+      {
+        "category": "security",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/url.py",
+        "start_line": 40,
+        "end_line": 82,
+        "description": "The new `url` property and `__str__` method construct URLs by directly concatenating authentication credentials with host and port information. This can lead to sensitive credential exposure in logs, error messages, or debugging output. The auth component (which may contain username:password) is included in the URL string without any obfuscation or redaction.",
+        "suggested_fix": "Either redact credentials when converting to string (e.g., replace password with '***'), or provide a separate secure URL representation method that omits sensitive information. For the __str__ method, consider returning a redacted version of the URL to prevent accidental credential exposure.",
+        "confidence": 0.65
+      },
+      {
+        "category": "security",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/util/retry.py",
+        "start_line": 251,
+        "end_line": 266,
+        "description": "The new code in the retry logic now passes `ResponseError(cause)` to MaxRetryError when retries are exhausted. The `cause` variable is built from error messages or user-controlled HTTP response status codes. While ResponseError appears to be designed for this, ensure that the `cause` parameter doesn't allow injection of arbitrary content that could be exposed in exception messages or logs.",
+        "suggested_fix": "Validate or sanitize the `cause` variable, particularly when it's constructed from response.status or other user-controlled data, to prevent any potential message injection attacks.",
+        "confidence": 0.45
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/adapters.py",
+        "start_line": 82,
+        "end_line": 87,
+        "description": "Type coercion logic in __init__ is unclear. The conversion from int/Retry to Retry via `Retry.from_int()` is implicit and not documented. The conditional check `if max_retries == DEFAULT_RETRIES` mixes type checking with value checking, making it hard to understand what types are accepted.",
+        "suggested_fix": "Add type hints to __init__ signature (e.g., `max_retries: Union[int, Retry] = DEFAULT_RETRIES`) and consider extracting the coercion logic to a named private method like `_normalize_retries(max_retries)` with clear documentation of accepted types.",
+        "confidence": 0.75
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/adapters.py",
+        "start_line": 418,
+        "end_line": 425,
+        "description": "New ResponseError handling is added but the condition `isinstance(e.reason, ResponseError)` appears after checking for ConnectTimeoutError but before the catch-all ConnectionError. This exception handling order may be fragile and is not well-documented. The relationship between ResponseError, urllib3 exceptions, and requests exceptions is unclear.",
+        "suggested_fix": "Add a comment explaining why ResponseError is caught separately and document the exception hierarchy. Consider whether ResponseError should be handled alongside other specific error types with better organization.",
+        "confidence": 0.65
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/_collections.py",
+        "start_line": 85,
+        "end_line": 91,
+        "description": "The `clear()` method was updated to use `itervalues()` instead of `.values()`, and `keys()` was updated to use `iterkeys()`. While this improves compatibility, the change removes the inline comment explaining the double copy behavior in Python 2, which was useful context.",
+        "suggested_fix": "Consider preserving the spirit of that comment or adding a module-level docstring explaining the use of iterkeys/itervalues for Python 2/3 compatibility.",
+        "confidence": 0.55
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/retry.py",
+        "start_line": 229,
+        "end_line": 260,
+        "description": "A new `cause` variable is introduced in the `increment()` method and set in three different branches (default, redirect, and else). The initialization to 'unknown' and subsequent conditional assignments make the logic harder to follow. The comment 'FIXME' was replaced with a more specific comment, but the overall flow is still unclear.",
+        "suggested_fix": "Extract the cause determination logic into a separate private method like `_determine_error_cause(error, response, redirect_needed)` to make the intent clearer and improve testability.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 199,
+        "end_line": 225,
+        "description": "New `_send_until_done()` helper method was extracted from `sendall()`, which improves code reusability. However, the method is private with minimal documentation. The logic around WantWriteError handling and timeout could benefit from a docstring explaining the retry mechanism.",
+        "suggested_fix": "Add a docstring to `_send_until_done()` explaining the OpenSSL WantWriteError retry semantics and why this approach is needed.",
+        "confidence": 0.6
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/util/url.py",
+        "start_line": 40,
+        "end_line": 87,
+        "description": "New `url` property and `__str__` method added to the Url namedtuple. The property implementation is lengthy (40+ lines) with repetitive if-checks. While functional, this makes the class less maintainable and harder to test. The comment 'We use \"is not None\" we want things to happen with empty strings' is unclear.",
+        "suggested_fix": "Consider extracting the url building logic into a separate module-level function, or add type hints and clearer comments. Simplify the comment about 'is not None' check.",
+        "confidence": 0.6
+      },
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "requests/adapters.py",
+        "start_line": 85,
+        "end_line": 89,
+        "description": "The logic for converting max_retries to a Retry object is incorrect. When max_retries == DEFAULT_RETRIES, it creates Retry(0, read=False) which disables all retries including connection retries. However, this should preserve the default behavior. Additionally, Retry.from_int() converts an integer to a Retry object using the format Retry(total), but the original code was wrapping the integer directly in Retry(). The conversion should use from_int() consistently, not conditionally.",
+        "suggested_fix": "Use 'self.max_retries = Retry.from_int(max_retries) if max_retries != DEFAULT_RETRIES else Retry(0, read=False)' OR better yet, always use Retry.from_int() for all integer inputs, since from_int() should handle the default case appropriately.",
+        "confidence": 0.85
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/retry.py",
+        "start_line": 268,
+        "end_line": 270,
+        "description": "The MaxRetryError is being raised with 'error or ResponseError(cause)' as the reason parameter. However, ResponseError(cause) is being instantiated with a string argument 'cause', but the ResponseError class definition doesn't show an __init__ that accepts a custom message parameter - it appears to be a simple exception class. This could result in an exception being raised during exception handling, or the ResponseError being constructed incorrectly without the intended message.",
+        "suggested_fix": "Verify that ResponseError can be instantiated with a string argument, or pass the cause as a named parameter or use a different approach to attach the cause information.",
+        "confidence": 0.75
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/adapters.py",
+        "start_line": 82,
+        "end_line": 87,
+        "description": "Type coercion logic in __init__ is unclear. The conversion from int/Retry to Retry via `Retry.from_int()` is implicit and not documented. The conditional check `if max_retries == DEFAULT_RETRIES` mixes type checking with value checking, making it hard to understand what types are accepted.",
+        "suggested_fix": "Add type hints to __init__ signature (e.g., `max_retries: Union[int, Retry] = DEFAULT_RETRIES`) and consider extracting the coercion logic to a named private method like `_normalize_retries(max_retries)` with clear documentation of accepted types.",
+        "confidence": 0.75
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 213,
+        "end_line": 216,
+        "description": "In the _send_until_done method, when catching OpenSSL.SSL.WantWriteError and performing select.select() with a timeout, if the socket times out, a bare timeout() exception is raised. However, this timeout exception is not imported and the exception type is ambiguous - it could be the built-in timeout class or something else. This could cause an unhandled exception or incorrect behavior.",
+        "suggested_fix": "Import timeout from socket or use socket.timeout() explicitly. Verify that timeout() is the correct exception to raise in this context.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/retry.py",
+        "start_line": 229,
+        "end_line": 260,
+        "description": "A new `cause` variable is introduced in the `increment()` method and set in three different branches (default, redirect, and else). The initialization to 'unknown' and subsequent conditional assignments make the logic harder to follow. The comment 'FIXME' was replaced with a more specific comment, but the overall flow is still unclear.",
+        "suggested_fix": "Extract the cause determination logic into a separate private method like `_determine_error_cause(error, response, redirect_needed)` to make the intent clearer and improve testability.",
+        "confidence": 0.7
+      },
+      {
+        "category": "security",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/util/url.py",
+        "start_line": 40,
+        "end_line": 82,
+        "description": "The new `url` property and `__str__` method construct URLs by directly concatenating authentication credentials with host and port information. This can lead to sensitive credential exposure in logs, error messages, or debugging output. The auth component (which may contain username:password) is included in the URL string without any obfuscation or redaction.",
+        "suggested_fix": "Either redact credentials when converting to string (e.g., replace password with '***'), or provide a separate secure URL representation method that omits sensitive information. For the __str__ method, consider returning a redacted version of the URL to prevent accidental credential exposure.",
+        "confidence": 0.65
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/adapters.py",
+        "start_line": 418,
+        "end_line": 425,
+        "description": "New ResponseError handling is added but the condition `isinstance(e.reason, ResponseError)` appears after checking for ConnectTimeoutError but before the catch-all ConnectionError. This exception handling order may be fragile and is not well-documented. The relationship between ResponseError, urllib3 exceptions, and requests exceptions is unclear.",
+        "suggested_fix": "Add a comment explaining why ResponseError is caught separately and document the exception hierarchy. Consider whether ResponseError should be handled alongside other specific error types with better organization.",
+        "confidence": 0.65
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 199,
+        "end_line": 225,
+        "description": "New `_send_until_done()` helper method was extracted from `sendall()`, which improves code reusability. However, the method is private with minimal documentation. The logic around WantWriteError handling and timeout could benefit from a docstring explaining the retry mechanism.",
+        "suggested_fix": "Add a docstring to `_send_until_done()` explaining the OpenSSL WantWriteError retry semantics and why this approach is needed.",
+        "confidence": 0.6
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/util/url.py",
+        "start_line": 40,
+        "end_line": 87,
+        "description": "New `url` property and `__str__` method added to the Url namedtuple. The property implementation is lengthy (40+ lines) with repetitive if-checks. While functional, this makes the class less maintainable and harder to test. The comment 'We use \"is not None\" we want things to happen with empty strings' is unclear.",
+        "suggested_fix": "Consider extracting the url building logic into a separate module-level function, or add type hints and clearer comments. Simplify the comment about 'is not None' check.",
+        "confidence": 0.6
+      }
+    ]
+  }
+]

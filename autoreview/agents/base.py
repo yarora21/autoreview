@@ -62,7 +62,11 @@ def run_agent(
         for block in response.content:
             if block.type == "tool_use" and block.name == "report_findings":
                 for f in block.input.get("findings", []):
-                    findings.append(Finding(**f))
+                    if isinstance(f, dict):
+                        try:
+                            findings.append(Finding(**f))
+                        except Exception as e:
+                            logger.warning("%s agent: skipping malformed finding: %s", name, e)
 
         logger.info("%s agent: %d findings (tokens: %d)", name, len(findings),
                     response.usage.input_tokens + response.usage.output_tokens)

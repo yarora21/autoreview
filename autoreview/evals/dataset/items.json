@@ -1,0 +1,152 @@
+[
+  {
+    "repo": "psf/requests",
+    "pr_number": 2306,
+    "pr_url": "https://github.com/psf/requests/pull/2306",
+    "label": "bug",
+    "bug_file": "test_requests.py",
+    "bug_start_line": 6,
+    "bug_end_line": 7,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2375,
+    "pr_url": "https://github.com/psf/requests/pull/2375",
+    "label": "bug",
+    "bug_file": "requests/packages/__init__.py",
+    "bug_start_line": 2,
+    "bug_end_line": 97,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2216,
+    "pr_url": "https://github.com/psf/requests/pull/2216",
+    "label": "bug",
+    "bug_file": "requests/adapters.py",
+    "bug_start_line": 5,
+    "bug_end_line": 51,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2466,
+    "pr_url": "https://github.com/psf/requests/pull/2466",
+    "label": "bug",
+    "bug_file": "requests/packages/__init__.py",
+    "bug_start_line": 6,
+    "bug_end_line": 36,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2429,
+    "pr_url": "https://github.com/psf/requests/pull/2429",
+    "label": "clean",
+    "bug_file": null,
+    "bug_start_line": null,
+    "bug_end_line": null,
+    "category": null
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2497,
+    "pr_url": "https://github.com/psf/requests/pull/2497",
+    "label": "clean",
+    "bug_file": null,
+    "bug_start_line": null,
+    "bug_end_line": null,
+    "category": null
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2284,
+    "pr_url": "https://github.com/pallets/flask/pull/2284",
+    "label": "bug",
+    "bug_file": "flask/helpers.py",
+    "bug_start_line": 5,
+    "bug_end_line": 30,
+    "category": "bug"
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2254,
+    "pr_url": "https://github.com/pallets/flask/pull/2254",
+    "label": "bug",
+    "bug_file": "flask/app.py",
+    "bug_start_line": 9,
+    "bug_end_line": 9,
+    "category": "bug"
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2242,
+    "pr_url": "https://github.com/pallets/flask/pull/2242",
+    "label": "bug",
+    "bug_file": "tests/test_helpers.py",
+    "bug_start_line": 6,
+    "bug_end_line": 6,
+    "category": "bug"
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2730,
+    "pr_url": "https://github.com/pallets/flask/pull/2730",
+    "label": "bug",
+    "bug_file": "flask/blueprints.py",
+    "bug_start_line": 6,
+    "bug_end_line": 6,
+    "category": "bug"
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2738,
+    "pr_url": "https://github.com/pallets/flask/pull/2738",
+    "label": "bug",
+    "bug_file": "flask/blueprints.py",
+    "bug_start_line": 6,
+    "bug_end_line": 21,
+    "category": "bug"
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 3442,
+    "pr_url": "https://github.com/encode/httpx/pull/3442",
+    "label": "bug",
+    "bug_file": "httpx/_config.py",
+    "bug_start_line": 9,
+    "bug_end_line": 11,
+    "category": "bug"
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 1122,
+    "pr_url": "https://github.com/encode/httpx/pull/1122",
+    "label": "bug",
+    "bug_file": "httpx/_client.py",
+    "bug_start_line": 6,
+    "bug_end_line": 30,
+    "category": "bug"
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 2701,
+    "pr_url": "https://github.com/encode/httpx/pull/2701",
+    "label": "bug",
+    "bug_file": "httpx/_urlparse.py",
+    "bug_start_line": 6,
+    "bug_end_line": 20,
+    "category": "bug"
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 2671,
+    "pr_url": "https://github.com/encode/httpx/pull/2671",
+    "label": "bug",
+    "bug_file": "httpx/_urlparse.py",
+    "bug_start_line": 6,
+    "bug_end_line": 41,
+    "category": "bug"
+  }
+]

@@ -51,6 +51,19 @@ class CodeChunk(BaseModel):
     docstring: Optional[str] = None
 
 
+class EvalItem(BaseModel):
+    """A single labeled benchmark item."""
+    repo: str           # e.g. "psf/requests"
+    pr_number: int
+    pr_url: str
+    label: str          # "bug" or "clean"
+    # For bug items: where the ground-truth bug was
+    bug_file: Optional[str] = None
+    bug_start_line: Optional[int] = None
+    bug_end_line: Optional[int] = None
+    category: Optional[str] = None  # expected category: bug/security/etc.
+
+
 class ReviewResult(BaseModel):
     pr_url: str
     findings: list[Finding] = []
