@@ -1,0 +1,601 @@
+[
+  {
+    "repo": "psf/requests",
+    "pr_number": 2306,
+    "pr_url": "https://github.com/psf/requests/pull/2306",
+    "label": "bug",
+    "bug_file": "test_requests.py",
+    "num_findings": 1,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "test_requests.py",
+        "start_line": 1515,
+        "end_line": 1515,
+        "description": "Adding hooks=[] may mask issues with mutable default argument handling. If hooks are not provided in real usage, the code should handle the None case properly rather than always passing an empty list in tests.",
+        "suggested_fix": "Consider testing both cases: hooks=None (the default) and hooks=[] to ensure both scenarios work correctly. This would provide better test coverage of the actual API usage patterns.",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2375,
+    "pr_url": "https://github.com/psf/requests/pull/2375",
+    "label": "bug",
+    "bug_file": "requests/packages/__init__.py",
+    "num_findings": 4,
+    "hit": true,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 59,
+        "end_line": 70,
+        "description": "Complex meta_path manipulation in finally block could lead to issues if exceptions occur during the meta_path restoration. The loop appending new items to real_meta_path could be simplified and made more robust.",
+        "suggested_fix": "Consider using a context manager or simpler approach to temporarily modify sys.meta_path, or add error handling around the meta_path restoration logic.",
+        "confidence": 0.7
+      },
+      {
+        "category": "performance",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 56,
+        "end_line": 57,
+        "description": "Creating a copy of sys.meta_path and filtering it on every module load could be inefficient for frequently imported modules. The list comprehension creates a new list each time.",
+        "suggested_fix": "Consider caching the filtered meta_path or using a more efficient approach to temporarily disable VendorAlias instances.",
+        "confidence": 0.6
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 74,
+        "end_line": 79,
+        "description": "The fallback import mechanism strips the vendor package prefix and tries to import the 'real' name, but this could lead to unexpected behavior if the real module has different behavior than the vendored version.",
+        "suggested_fix": "Add logging or warnings when falling back to the real module name to make this behavior more transparent to developers.",
+        "confidence": 0.5
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 93,
+        "end_line": 93,
+        "description": "The VendorAlias instance is added to sys.meta_path at module import time, which means it persists globally and could affect other parts of the application. This side effect happens during module import.",
+        "suggested_fix": "Consider documenting this global side effect clearly, or provide a way to remove the alias when no longer needed.",
+        "confidence": 0.8
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2216,
+    "pr_url": "https://github.com/psf/requests/pull/2216",
+    "label": "bug",
+    "bug_file": "requests/adapters.py",
+    "num_findings": 5,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/adapters.py",
+        "start_line": 84,
+        "end_line": 87,
+        "description": "Potential breaking change: The initialization of max_retries has been changed to always use Retry objects instead of allowing integer values. This could break existing code that expects max_retries to be an integer.",
+        "suggested_fix": "Consider adding backward compatibility handling or documenting this breaking change clearly.",
+        "confidence": 0.8
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 202,
+        "end_line": 212,
+        "description": "The _send_until_done method uses select() without proper exception handling. If select() raises an exception or if socket operations fail, it could lead to infinite loops or uncaught exceptions.",
+        "suggested_fix": "Add proper exception handling around select() calls and implement a maximum retry limit to prevent infinite loops.",
+        "confidence": 0.7
+      },
+      {
+        "category": "security",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/contrib/pyopenssl.py",
+        "start_line": 264,
+        "end_line": 264,
+        "description": "The line 'keyfile = keyfile or certfile' could potentially use the certificate file as the private key file if keyfile is None/empty. While this matches Python's ssl library behavior, it could be confusing and potentially insecure if not intended.",
+        "suggested_fix": "Add explicit validation or documentation to clarify when this behavior is intended.",
+        "confidence": 0.6
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/exceptions.py",
+        "start_line": 75,
+        "end_line": 77,
+        "description": "The MaxRetryError message formatting was simplified but now always shows 'Caused by %r' even when reason might be None, which could display 'Caused by None'.",
+        "suggested_fix": "Add a check to handle the case when reason is None to avoid displaying 'Caused by None'.",
+        "confidence": 0.5
+      },
+      {
+        "category": "performance",
+        "severity": "low",
+        "file_path": "requests/packages/urllib3/_collections.py",
+        "start_line": 97,
+        "end_line": 97,
+        "description": "The keys() method now returns a list instead of a dictionary view/iterator, which could be less memory efficient for large containers and breaks the expected dict-like interface.",
+        "suggested_fix": "Consider whether this change is necessary or if it breaks expected behavior for dictionary-like objects.",
+        "confidence": 0.7
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2466,
+    "pr_url": "https://github.com/psf/requests/pull/2466",
+    "label": "bug",
+    "bug_file": "requests/packages/__init__.py",
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 51,
+        "end_line": 59,
+        "description": "The import validation check happens after the module lookup in sys.modules, but should happen before. This allows previously imported invalid modules to bypass the new validation logic.",
+        "suggested_fix": "Move the package name validation check to occur before the sys.modules lookup (around line 48) to ensure all imports are properly validated.",
+        "confidence": 0.8
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 107,
+        "end_line": 107,
+        "description": "The hardcoded package names ['urllib3', 'chardet'] make the code less flexible and harder to maintain. If vendored packages change, this list needs manual updates.",
+        "suggested_fix": "Consider making the package names configurable through a constant or discovering them dynamically from the filesystem.",
+        "confidence": 0.7
+      },
+      {
+        "category": "style",
+        "severity": "low",
+        "file_path": "requests/packages/__init__.py",
+        "start_line": 51,
+        "end_line": 52,
+        "description": "The condition spans multiple lines but could be more readable with better formatting or extraction to a helper method.",
+        "suggested_fix": "Consider extracting the validation logic to a helper method like '_is_valid_package_name(name)' for better readability.",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2429,
+    "pr_url": "https://github.com/psf/requests/pull/2429",
+    "label": "clean",
+    "bug_file": null,
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": true,
+    "findings": [
+      {
+        "category": "security",
+        "severity": "medium",
+        "file_path": "docs/community/support.rst",
+        "start_line": 22,
+        "end_line": 23,
+        "description": "Email addresses for vulnerability disclosure are exposed in plain text in documentation. This could lead to spam or targeted phishing attacks against security contacts.",
+        "suggested_fix": "Consider using contact forms, obfuscated email formats (e.g., 'user AT domain DOT com'), or a dedicated security contact page instead of raw email addresses.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "docs/community/support.rst",
+        "start_line": 50,
+        "end_line": 56,
+        "description": "CVE links use HTTP instead of HTTPS, which could be vulnerable to man-in-the-middle attacks and doesn't follow modern security best practices.",
+        "suggested_fix": "Change CVE links to use HTTPS: 'https://www.cve.mitre.org/cgi-bin/cvename.cgi?name=2014-1829' and 'https://www.cve.mitre.org/cgi-bin/cvename.cgi?name=2014-1830'",
+        "confidence": 0.8
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "docs/community/support.rst",
+        "start_line": 15,
+        "end_line": 17,
+        "description": "Twitter links use HTTP instead of HTTPS, which is less secure and may cause browser warnings for users.",
+        "suggested_fix": "Update Twitter links to use HTTPS: 'https://twitter.com/kennethreitz', 'https://twitter.com/sigmavirus24', 'https://twitter.com/lukasaoz'",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "psf/requests",
+    "pr_number": 2497,
+    "pr_url": "https://github.com/psf/requests/pull/2497",
+    "label": "clean",
+    "bug_file": null,
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": true,
+    "findings": [
+      {
+        "category": "style",
+        "severity": "low",
+        "file_path": "docs/community/vulnerabilities.rst",
+        "start_line": 105,
+        "end_line": 105,
+        "description": "Missing newline at end of file",
+        "suggested_fix": "Add a newline character at the end of the file",
+        "confidence": 0.9
+      },
+      {
+        "category": "security",
+        "severity": "medium",
+        "file_path": "docs/community/vulnerabilities.rst",
+        "start_line": 5,
+        "end_line": 6,
+        "description": "Email addresses exposed in plain text in documentation could be targets for spam or social engineering attacks",
+        "suggested_fix": "Consider using contact forms or obfuscating email addresses (e.g., graffatcolmingov [at] gmail [dot] com)",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "docs/community/vulnerabilities.rst",
+        "start_line": 70,
+        "end_line": 73,
+        "description": "Hardcoded list of downstream packager contacts creates maintenance burden when contacts change",
+        "suggested_fix": "Consider maintaining this list in a separate configuration file or making it clear how to update this list when contacts change",
+        "confidence": 0.8
+      }
+    ]
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2284,
+    "pr_url": "https://github.com/pallets/flask/pull/2284",
+    "label": "bug",
+    "bug_file": "flask/helpers.py",
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "flask/helpers.py",
+        "start_line": 658,
+        "end_line": 658,
+        "description": "Path traversal vulnerability: The function now uses posixpath.join() instead of os.path.join(), which may not properly handle Windows-specific path separators and could allow directory traversal attacks on Windows systems. The original os.path.join() was platform-aware and safer.",
+        "suggested_fix": "Use os.path.join(*parts) instead of posixpath.join(*parts) to maintain platform-specific path handling and security properties.",
+        "confidence": 0.85
+      },
+      {
+        "category": "security",
+        "severity": "medium",
+        "file_path": "flask/helpers.py",
+        "start_line": 642,
+        "end_line": 656,
+        "description": "The refactored path validation logic may have subtle differences in security behavior. The original code performed incremental validation as it built the path with os.path.join(), while the new code validates components separately then joins them. This could potentially miss edge cases in path normalization.",
+        "suggested_fix": "Consider keeping the original incremental validation approach or add comprehensive tests to ensure all security properties are preserved.",
+        "confidence": 0.65
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "flask/helpers.py",
+        "start_line": 647,
+        "end_line": 653,
+        "description": "The multi-line condition formatting reduces readability by spreading a simple condition across many lines. The original format was more concise while still being clear.",
+        "suggested_fix": "Consider using a more compact format like: if any(sep in filename for sep in _os_alt_seps) or os.path.isabs(filename) or filename in ('..', '../') or filename.startswith('../'):",
+        "confidence": 0.7
+      }
+    ]
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2254,
+    "pr_url": "https://github.com/pallets/flask/pull/2254",
+    "label": "bug",
+    "bug_file": "flask/app.py",
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "flask/app.py",
+        "start_line": 2005,
+        "end_line": 2009,
+        "description": "Moving ctx.push() inside the try block changes error handling behavior and could mask context-related errors. The original placement ensured the context was always pushed before any request processing.",
+        "suggested_fix": "Consider adding explicit error handling for ctx.push() failures or documenting why this change in behavior is intentional for session errors specifically.",
+        "confidence": 0.8
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "tests/test_reqctx.py",
+        "start_line": 213,
+        "end_line": 215,
+        "description": "The test assertion 'assert False' in the index route handler is unreachable due to the session error, making it ineffective as a test guard. This could hide issues if the error handling changes.",
+        "suggested_fix": "Replace 'assert False' with a more descriptive assertion or remove it if the route is never expected to be reached.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "tests/test_reqctx.py",
+        "start_line": 218,
+        "end_line": 220,
+        "description": "The test asserts that flask.request and flask.current_app are falsy, but doesn't verify the specific error handling behavior mentioned in the changelog. This makes the test incomplete for validating the intended fix.",
+        "suggested_fix": "Add assertions to verify that the session error was properly handled by the app's error handlers, such as checking error handler invocation or specific error response content.",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2242,
+    "pr_url": "https://github.com/pallets/flask/pull/2242",
+    "label": "bug",
+    "bug_file": "tests/test_helpers.py",
+    "num_findings": 2,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "tests/test_helpers.py",
+        "start_line": 520,
+        "end_line": 520,
+        "description": "Use of deprecated datetime.utcfromtimestamp() method. This method was deprecated in Python 3.12 and will be removed in a future version.",
+        "suggested_fix": "Replace datetime.datetime.utcfromtimestamp() with datetime.datetime.fromtimestamp(tz=datetime.timezone.utc) to use the modern timezone-aware approach",
+        "confidence": 0.9
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "tests/test_helpers.py",
+        "start_line": 520,
+        "end_line": 522,
+        "description": "Potential timezone inconsistency issue. The change from fromtimestamp() to utcfromtimestamp() changes the timezone interpretation of the file modification time, which could cause test failures if other parts of the code expect local timezone.",
+        "suggested_fix": "Verify that all related code consistently uses UTC timestamps, or consider using timezone-aware datetime objects throughout",
+        "confidence": 0.7
+      }
+    ]
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2730,
+    "pr_url": "https://github.com/pallets/flask/pull/2730",
+    "label": "bug",
+    "bug_file": "flask/blueprints.py",
+    "num_findings": 2,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "flask/blueprints.py",
+        "start_line": 204,
+        "end_line": 205,
+        "description": "The hasattr check for '__name__' may not handle all edge cases. Some callable objects might have a __name__ attribute that is not a string (e.g., None, empty string), which could still cause issues with the dot assertion on the next line.",
+        "suggested_fix": "Consider a more robust check: `if view_func and hasattr(view_func, '__name__') and view_func.__name__:` to ensure __name__ exists and is truthy.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "tests/test_blueprints.py",
+        "start_line": 386,
+        "end_line": 386,
+        "description": "The test adds a URL rule with a functools.partial but doesn't verify that the route actually works or test the fix behavior. The test should include an assertion that validates the partial function can be registered and called successfully.",
+        "suggested_fix": "Add a test assertion like `assert client.get('/py/bar/456').status_code == 200` to verify the partial function route works correctly.",
+        "confidence": 0.8
+      }
+    ]
+  },
+  {
+    "repo": "pallets/flask",
+    "pr_number": 2738,
+    "pr_url": "https://github.com/pallets/flask/pull/2738",
+    "label": "bug",
+    "bug_file": "flask/blueprints.py",
+    "num_findings": 3,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "flask/blueprints.py",
+        "start_line": 67,
+        "end_line": 67,
+        "description": "Using '/'.join() on URL segments without proper handling of leading slashes can create malformed URLs. When 'rule' starts with '/' and is passed to lstrip('/'), it removes the slash, but if 'rule' has multiple leading slashes or other patterns, the join logic may not behave as expected.",
+        "suggested_fix": "Consider using more robust URL joining logic, such as urllib.parse.urljoin() or a custom function that properly handles all edge cases with slashes.",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "flask/blueprints.py",
+        "start_line": 50,
+        "end_line": 52,
+        "description": "The URL prefix normalization logic has been simplified but the comment on lines 53-54 still refers to the old implementation that checked for trailing slashes differently. This could confuse future maintainers.",
+        "suggested_fix": "Update the comment to reflect the new rstrip('/') approach for URL prefix normalization.",
+        "confidence": 0.8
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "flask/blueprints.py",
+        "start_line": 50,
+        "end_line": 52,
+        "description": "The condition 'if url_prefix:' will treat empty string as falsy, but None check was already done above. This means an empty string url_prefix won't get the rstrip('/') treatment, which may be inconsistent behavior.",
+        "suggested_fix": "Consider changing to 'if url_prefix is not None:' to handle empty strings consistently, or document that empty strings are intentionally treated differently.",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 3442,
+    "pr_url": "https://github.com/encode/httpx/pull/3442",
+    "label": "bug",
+    "bug_file": "httpx/_config.py",
+    "num_findings": 1,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "httpx/_config.py",
+        "start_line": 42,
+        "end_line": 45,
+        "description": "Early return statement removed without ensuring SSL context configuration is completed. The original code returned the SSL context immediately after configuring it for verify=False, but now it assigns to 'ctx' and continues execution without a return statement, potentially causing undefined behavior or incorrect SSL context configuration.",
+        "suggested_fix": "Add 'return ctx' after line 45, or ensure the function properly handles the ctx variable in all code paths that follow.",
+        "confidence": 0.9
+      }
+    ]
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 1122,
+    "pr_url": "https://github.com/encode/httpx/pull/1122",
+    "label": "bug",
+    "bug_file": "httpx/_client.py",
+    "num_findings": 0,
+    "hit": false,
+    "false_positive": false,
+    "findings": []
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 2701,
+    "pr_url": "https://github.com/encode/httpx/pull/2701",
+    "label": "bug",
+    "bug_file": "httpx/_urlparse.py",
+    "num_findings": 5,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "httpx/_urlparse.py",
+        "start_line": 261,
+        "end_line": 261,
+        "description": "The safe characters for path encoding include '[' and ']' which are not valid unescaped characters in URL paths according to RFC 3986. Square brackets are reserved characters that should be percent-encoded in the path component unless they serve a specific syntactic purpose (like IPv6 addresses in authority).",
+        "suggested_fix": "Remove '[' and ']' from the safe characters for path: quote(path, safe=SUB_DELIMS + \":/@\")",
+        "confidence": 0.8
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "httpx/_urlparse.py",
+        "start_line": 264,
+        "end_line": 264,
+        "description": "The safe characters for query encoding include '[' and ']' which should typically be percent-encoded in query strings. While some parsers may accept them, it's safer to encode them to ensure compatibility.",
+        "suggested_fix": "Remove '[' and ']' from the safe characters for query: quote(query, safe=SUB_DELIMS + \":/?@\")",
+        "confidence": 0.7
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "file_path": "tests/test_urlparse.py",
+        "start_line": 252,
+        "end_line": 252,
+        "description": "Typo in comment: 'fragement' should be 'fragment'.",
+        "suggested_fix": "Fix typo: '# Tests for percent encoding across path, query, and fragment...'",
+        "confidence": 1.0
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "tests/test_urlparse.py",
+        "start_line": 266,
+        "end_line": 266,
+        "description": "The test constructs a URL with a malformed query string by appending an extra '?' at the end. This creates an invalid URL format that may not test the intended behavior.",
+        "suggested_fix": "Use a properly formatted query string or clarify the test intention with a comment explaining why the extra '?' is needed",
+        "confidence": 0.6
+      },
+      {
+        "category": "bug",
+        "severity": "low",
+        "file_path": "tests/test_urlparse.py",
+        "start_line": 274,
+        "end_line": 274,
+        "description": "The test constructs a URL with malformed fragment by appending '?#' at the end. This creates an invalid URL format that may not test the intended behavior.",
+        "suggested_fix": "Use a properly formatted fragment or clarify the test intention with a comment explaining why the extra '?#' is needed",
+        "confidence": 0.6
+      }
+    ]
+  },
+  {
+    "repo": "encode/httpx",
+    "pr_number": 2671,
+    "pr_url": "https://github.com/encode/httpx/pull/2671",
+    "label": "bug",
+    "bug_file": "httpx/_urlparse.py",
+    "num_findings": 4,
+    "hit": false,
+    "false_positive": false,
+    "findings": [
+      {
+        "category": "bug",
+        "severity": "high",
+        "file_path": "httpx/_urlparse.py",
+        "start_line": 425,
+        "end_line": 425,
+        "description": "The is_safe function assumes PERCENT_ENCODED_REGEX is defined but it's not shown in the diff. If this regex is incorrect or missing, it could lead to incorrect validation of percent-encoded sequences, potentially causing malformed URLs or security issues.",
+        "suggested_fix": "Ensure PERCENT_ENCODED_REGEX is properly defined and matches the pattern r'%[0-9A-Fa-f]{2}' to correctly validate percent-encoded sequences.",
+        "confidence": 0.8
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "file_path": "httpx/_urlparse.py",
+        "start_line": 426,
+        "end_line": 439,
+        "description": "The quote function has been refactored to call is_safe first, but if is_safe returns False, it reconstructs NON_ESCAPED_CHARS without the '%' character. This duplicates logic and could lead to inconsistency if the safe character handling in is_safe diverges from quote.",
+        "suggested_fix": "Consider extracting the NON_ESCAPED_CHARS logic into a shared helper function or passing it as a parameter to avoid duplication.",
+        "confidence": 0.7
+      },
+      {
+        "category": "performance",
+        "severity": "low",
+        "file_path": "httpx/_urlparse.py",
+        "start_line": 418,
+        "end_line": 425,
+        "description": "The is_safe function iterates through the string twice - once in the for loop to check characters and once in the regex findall operation. For long strings, this could be inefficient.",
+        "suggested_fix": "Consider combining the character validation and percent-encoding validation in a single pass through the string.",
+        "confidence": 0.6
+      },
+      {
+        "category": "bug",
+        "severity": "medium",
+        "file_path": "tests/test_urlparse.py",
+        "start_line": 137,
+        "end_line": 139,
+        "description": "The test case 'test_param_does_not_require_encoding' expects that 'with%20spaces' remains unchanged, but this assumes the is_safe function correctly identifies this as already encoded. If there's a bug in is_safe, this test might pass incorrectly.",
+        "suggested_fix": "Add more comprehensive test cases that verify the is_safe function works correctly with various edge cases like malformed percent encoding (e.g., '%2G', '%2', etc.).",
+        "confidence": 0.7
+      }
+    ]
+  }
+]

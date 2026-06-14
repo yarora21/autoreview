@@ -43,7 +43,7 @@ def run_agent(
     name: str,
     prompt_path: Path,
     context: ContextPack,
-    model: str = "claude-haiku-4-5-20251001",
+    model: str = "claude-sonnet-4-20250514",
 ) -> list[Finding]:
     """Call Claude with a focused system prompt and return structured findings."""
     client = anthropic.Anthropic()

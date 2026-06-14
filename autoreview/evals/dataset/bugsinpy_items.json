@@ -1,0 +1,172 @@
+[
+  {
+    "repo": "psf/black",
+    "pr_number": 1141,
+    "pr_url": "https://github.com/psf/black/pull/1141",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 651,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 1325,
+    "pr_url": "https://github.com/psf/black/pull/1325",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 3116,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 1361,
+    "pr_url": "https://github.com/psf/black/pull/1361",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 394,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 948,
+    "pr_url": "https://github.com/psf/black/pull/948",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 1480,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 891,
+    "pr_url": "https://github.com/psf/black/pull/891",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 2491,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 832,
+    "pr_url": "https://github.com/psf/black/pull/832",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 2765,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 829,
+    "pr_url": "https://github.com/psf/black/pull/829",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 2,
+    "bug_end_line": 2405,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 4410,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/4410",
+    "label": "bug",
+    "bug_file": "scrapy/spidermiddlewares/offsite.py",
+    "bug_start_line": 2,
+    "bug_end_line": 54,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 4123,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/4123",
+    "label": "bug",
+    "bug_file": "scrapy/utils/datatypes.py",
+    "bug_start_line": 2,
+    "bug_end_line": 315,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 4042,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/4042",
+    "label": "bug",
+    "bug_file": "scrapy/downloadermiddlewares/redirect.py",
+    "bug_start_line": 2,
+    "bug_end_line": 70,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 3371,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/3371",
+    "label": "bug",
+    "bug_file": "scrapy/contracts/__init__.py",
+    "bug_start_line": 2,
+    "bug_end_line": 84,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 3131,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/3131",
+    "label": "bug",
+    "bug_file": "scrapy/http/response/__init__.py",
+    "bug_start_line": 2,
+    "bug_end_line": 120,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 2675,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/2675",
+    "label": "bug",
+    "bug_file": "scrapy/pipelines/images.py",
+    "bug_start_line": 2,
+    "bug_end_line": 132,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 2548,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/2548",
+    "label": "bug",
+    "bug_file": "scrapy/http/request/form.py",
+    "bug_start_line": 2,
+    "bug_end_line": 54,
+    "category": "bug"
+  },
+  {
+    "repo": "scrapy/scrapy",
+    "pr_number": 2509,
+    "pr_url": "https://github.com/scrapy/scrapy/pull/2509",
+    "label": "bug",
+    "bug_file": "scrapy/item.py",
+    "bug_start_line": 2,
+    "bug_end_line": 40,
+    "category": "bug"
+  },
+  {
+    "repo": "tornadoweb/tornado",
+    "pr_number": 2613,
+    "pr_url": "https://github.com/tornadoweb/tornado/pull/2613",
+    "label": "bug",
+    "bug_file": "tornado/websocket.py",
+    "bug_start_line": 2,
+    "bug_end_line": 1349,
+    "category": "bug"
+  },
+  {
+    "repo": "tornadoweb/tornado",
+    "pr_number": 2440,
+    "pr_url": "https://github.com/tornadoweb/tornado/pull/2440",
+    "label": "bug",
+    "bug_file": "tornado/http1connection.py",
+    "bug_start_line": 2,
+    "bug_end_line": 390,
+    "category": "bug"
+  }
+]
