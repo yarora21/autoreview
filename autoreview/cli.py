@@ -54,7 +54,7 @@ def review_pr(pr_url: str, repo_path: str, no_rag: bool, single_agent: bool):
         result = review(pr_url, context)
     else:
         graph = build_graph()
-        state = graph.invoke({"context": context, "findings": []})
+        state = graph.invoke({"context": context, "raw_findings": [], "findings": []})
         from autoreview.core.schemas import ReviewResult
         result = ReviewResult(pr_url=pr_url, findings=state["findings"])
 

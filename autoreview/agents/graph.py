@@ -13,28 +13,29 @@ from autoreview.retrieval.context_pack import ContextPack
 PROMPTS = Path(__file__).parent / "prompts"
 
 
-# Shared state that flows through the graph.
-# findings uses Annotated + operator.add so each agent *appends* rather than overwrites.
+# raw_findings accumulates across parallel agents via operator.add.
+# findings is written once by the synthesizer (plain list, no reducer).
 class ReviewState(TypedDict):
     context: ContextPack
-    findings: Annotated[list[Finding], operator.add]
+    raw_findings: Annotated[list[Finding], operator.add]
+    findings: list[Finding]
 
 
 def bug_node(state: ReviewState) -> dict:
-    return {"findings": run_agent("bug", PROMPTS / "bug.txt", state["context"])}
+    return {"raw_findings": run_agent("bug", PROMPTS / "bug.txt", state["context"])}
 
 
 def security_node(state: ReviewState) -> dict:
-    return {"findings": run_agent("security", PROMPTS / "security.txt", state["context"])}
+    return {"raw_findings": run_agent("security", PROMPTS / "security.txt", state["context"])}
 
 
 def style_node(state: ReviewState) -> dict:
-    return {"findings": run_agent("style", PROMPTS / "style.txt", state["context"])}
+    return {"raw_findings": run_agent("style", PROMPTS / "style.txt", state["context"])}
 
 
 def synthesizer_node(state: ReviewState) -> dict:
     from autoreview.agents.synthesizer import synthesize
-    return {"findings": synthesize(state["findings"])}
+    return {"findings": synthesize(state["raw_findings"])}
 
 
 def build_graph():
