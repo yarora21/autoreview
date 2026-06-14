@@ -5,8 +5,8 @@
     "pr_url": "https://github.com/psf/black/pull/1141",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 651,
+    "bug_start_line": 621,
+    "bug_end_line": 654,
     "category": "bug"
   },
   {
@@ -15,8 +15,8 @@
     "pr_url": "https://github.com/psf/black/pull/1325",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 3116,
+    "bug_start_line": 3119,
+    "bug_end_line": 3161,
     "category": "bug"
   },
   {
@@ -25,8 +25,8 @@
     "pr_url": "https://github.com/psf/black/pull/1361",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 394,
+    "bug_start_line": 397,
+    "bug_end_line": 397,
     "category": "bug"
   },
   {
@@ -35,8 +35,8 @@
     "pr_url": "https://github.com/psf/black/pull/948",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 1480,
+    "bug_start_line": 1483,
+    "bug_end_line": 1489,
     "category": "bug"
   },
   {
@@ -45,8 +45,8 @@
     "pr_url": "https://github.com/psf/black/pull/891",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 2491,
+    "bug_start_line": 1355,
+    "bug_end_line": 2500,
     "category": "bug"
   },
   {
@@ -55,8 +55,8 @@
     "pr_url": "https://github.com/psf/black/pull/832",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 2765,
+    "bug_start_line": 2729,
+    "bug_end_line": 2772,
     "category": "bug"
   },
   {
@@ -65,8 +65,28 @@
     "pr_url": "https://github.com/psf/black/pull/829",
     "label": "bug",
     "bug_file": "black.py",
-    "bug_start_line": 2,
-    "bug_end_line": 2405,
+    "bug_start_line": 2408,
+    "bug_end_line": 2418,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 754,
+    "pr_url": "https://github.com/psf/black/pull/754",
+    "label": "bug",
+    "bug_file": "black.py",
+    "bug_start_line": 729,
+    "bug_end_line": 735,
+    "category": "bug"
+  },
+  {
+    "repo": "psf/black",
+    "pr_number": 595,
+    "pr_url": "https://github.com/psf/black/pull/595",
+    "label": "bug",
+    "bug_file": "blib2to3/pgen2/driver.py",
+    "bug_start_line": 134,
+    "bug_end_line": 134,
     "category": "bug"
   },
   {
@@ -75,8 +95,8 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/4410",
     "label": "bug",
     "bug_file": "scrapy/spidermiddlewares/offsite.py",
-    "bug_start_line": 2,
-    "bug_end_line": 54,
+    "bug_start_line": 57,
+    "bug_end_line": 66,
     "category": "bug"
   },
   {
@@ -85,8 +105,8 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/4123",
     "label": "bug",
     "bug_file": "scrapy/utils/datatypes.py",
-    "bug_start_line": 2,
-    "bug_end_line": 315,
+    "bug_start_line": 318,
+    "bug_end_line": 320,
     "category": "bug"
   },
   {
@@ -96,7 +116,7 @@
     "label": "bug",
     "bug_file": "scrapy/downloadermiddlewares/redirect.py",
     "bug_start_line": 2,
-    "bug_end_line": 70,
+    "bug_end_line": 76,
     "category": "bug"
   },
   {
@@ -105,8 +125,8 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/3371",
     "label": "bug",
     "bug_file": "scrapy/contracts/__init__.py",
-    "bug_start_line": 2,
-    "bug_end_line": 84,
+    "bug_start_line": 87,
+    "bug_end_line": 87,
     "category": "bug"
   },
   {
@@ -115,8 +135,8 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/3131",
     "label": "bug",
     "bug_file": "scrapy/http/response/__init__.py",
-    "bug_start_line": 2,
-    "bug_end_line": 120,
+    "bug_start_line": 123,
+    "bug_end_line": 124,
     "category": "bug"
   },
   {
@@ -125,8 +145,8 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/2675",
     "label": "bug",
     "bug_file": "scrapy/pipelines/images.py",
-    "bug_start_line": 2,
-    "bug_end_line": 132,
+    "bug_start_line": 135,
+    "bug_end_line": 139,
     "category": "bug"
   },
   {
@@ -135,37 +155,157 @@
     "pr_url": "https://github.com/scrapy/scrapy/pull/2548",
     "label": "bug",
     "bug_file": "scrapy/http/request/form.py",
-    "bug_start_line": 2,
-    "bug_end_line": 54,
+    "bug_start_line": 8,
+    "bug_end_line": 60,
     "category": "bug"
   },
   {
-    "repo": "scrapy/scrapy",
-    "pr_number": 2509,
-    "pr_url": "https://github.com/scrapy/scrapy/pull/2509",
+    "repo": "tqdm/tqdm",
+    "pr_number": 882,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/882",
     "label": "bug",
-    "bug_file": "scrapy/item.py",
-    "bug_start_line": 2,
-    "bug_end_line": 40,
+    "bug_file": "tqdm/contrib/__init__.py",
+    "bug_start_line": 41,
+    "bug_end_line": 41,
     "category": "bug"
   },
   {
-    "repo": "tornadoweb/tornado",
-    "pr_number": 2613,
-    "pr_url": "https://github.com/tornadoweb/tornado/pull/2613",
+    "repo": "tqdm/tqdm",
+    "pr_number": 850,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/850",
     "label": "bug",
-    "bug_file": "tornado/websocket.py",
-    "bug_start_line": 2,
-    "bug_end_line": 1349,
+    "bug_file": "tqdm/std.py",
+    "bug_start_line": 488,
+    "bug_end_line": 504,
     "category": "bug"
   },
   {
-    "repo": "tornadoweb/tornado",
-    "pr_number": 2440,
-    "pr_url": "https://github.com/tornadoweb/tornado/pull/2440",
+    "repo": "tqdm/tqdm",
+    "pr_number": 694,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/694",
     "label": "bug",
-    "bug_file": "tornado/http1connection.py",
-    "bug_start_line": 2,
+    "bug_file": "tqdm/_tqdm.py",
+    "bug_start_line": 950,
+    "bug_end_line": 960,
+    "category": "bug"
+  },
+  {
+    "repo": "tqdm/tqdm",
+    "pr_number": 227,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/227",
+    "label": "bug",
+    "bug_file": "tqdm/_tqdm.py",
+    "bug_start_line": 323,
+    "bug_end_line": 324,
+    "category": "bug"
+  },
+  {
+    "repo": "tqdm/tqdm",
+    "pr_number": 292,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/292",
+    "label": "bug",
+    "bug_file": "tqdm/_tqdm.py",
+    "bug_start_line": 856,
+    "bug_end_line": 856,
+    "category": "bug"
+  },
+  {
+    "repo": "tqdm/tqdm",
+    "pr_number": 31,
+    "pr_url": "https://github.com/tqdm/tqdm/pull/31",
+    "label": "bug",
+    "bug_file": "tqdm/_tqdm.py",
+    "bug_start_line": 41,
+    "bug_end_line": 412,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2709,
+    "pr_url": "https://github.com/spotify/luigi/pull/2709",
+    "label": "bug",
+    "bug_file": "luigi/server.py",
+    "bug_start_line": 282,
+    "bug_end_line": 285,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2705,
+    "pr_url": "https://github.com/spotify/luigi/pull/2705",
+    "label": "bug",
+    "bug_file": "luigi/contrib/beam_dataflow.py",
+    "bug_start_line": 222,
+    "bug_end_line": 484,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2619,
+    "pr_url": "https://github.com/spotify/luigi/pull/2619",
+    "label": "bug",
+    "bug_file": "luigi/parameter.py",
+    "bug_start_line": 1117,
+    "bug_end_line": 1118,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2303,
+    "pr_url": "https://github.com/spotify/luigi/pull/2303",
+    "label": "bug",
+    "bug_file": "luigi/contrib/redshift.py",
+    "bug_start_line": 356,
+    "bug_end_line": 356,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2307,
+    "pr_url": "https://github.com/spotify/luigi/pull/2307",
+    "label": "bug",
+    "bug_file": "luigi/util.py",
+    "bug_start_line": 277,
+    "bug_end_line": 309,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2227,
+    "pr_url": "https://github.com/spotify/luigi/pull/2227",
+    "label": "bug",
+    "bug_file": "luigi/parameter.py",
+    "bug_start_line": 824,
+    "bug_end_line": 1002,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2187,
+    "pr_url": "https://github.com/spotify/luigi/pull/2187",
+    "label": "bug",
+    "bug_file": "luigi/scheduler.py",
+    "bug_start_line": 826,
+    "bug_end_line": 827,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 2086,
+    "pr_url": "https://github.com/spotify/luigi/pull/2086",
+    "label": "bug",
+    "bug_file": "luigi/contrib/redshift.py",
+    "bug_start_line": 335,
+    "bug_end_line": 339,
+    "category": "bug"
+  },
+  {
+    "repo": "spotify/luigi",
+    "pr_number": 1951,
+    "pr_url": "https://github.com/spotify/luigi/pull/1951",
+    "label": "bug",
+    "bug_file": "luigi/execution_summary.py",
+    "bug_start_line": 46,
     "bug_end_line": 390,
     "category": "bug"
   }

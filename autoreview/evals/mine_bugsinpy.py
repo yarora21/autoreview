@@ -56,27 +56,39 @@ def _parse_info(text: str) -> dict:
 
 
 def _parse_patch(patch: str) -> tuple[str | None, int, int]:
-    """Extract the first changed .py file and its line range from a unified diff."""
+    """Extract the first changed .py file and its line range from a unified diff.
+
+    Tracks the new-file line counter from each @@ hunk header so we get the
+    actual line numbers in the fixed file, not list-position offsets.
+    """
     current_file = None
-    lines_changed = []
+    changed_lines: list[int] = []
+    current_line = 0
 
     for line in patch.splitlines():
         if line.startswith("+++ b/"):
             fname = line[6:].strip()
             if fname.endswith(".py"):
-                current_file = fname
-        elif current_file and line.startswith("+") and not line.startswith("+++"):
-            lines_changed.append(len(lines_changed) + 1)
+                if not current_file:
+                    current_file = fname
+                elif current_file != fname:
+                    break  # stop at the second .py file; first is the bug location
         elif line.startswith("@@ "):
-            # Extract the starting line number from the hunk header
             m = re.search(r"\+(\d+)", line)
             if m:
-                base = int(m.group(1))
-                lines_changed = list(range(base, base + 1))
+                current_line = int(m.group(1))
+        elif current_file:
+            if line.startswith("+") and not line.startswith("+++"):
+                changed_lines.append(current_line)
+                current_line += 1
+            elif line.startswith("-"):
+                pass  # deleted line — no new-file line number
+            elif not line.startswith("\\"):  # skip "\ No newline at end of file"
+                current_line += 1  # context line
 
-    if not current_file or not lines_changed:
+    if not current_file or not changed_lines:
         return None, 0, 0
-    return current_file, min(lines_changed), max(lines_changed)
+    return current_file, min(changed_lines), max(changed_lines)
 
 
 def _find_pr_for_commit(repo: str, commit_sha: str) -> str | None:
