@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoReview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container { max-width: 800px; margin: 0 auto; }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #f0f6fc;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #e6edf3;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus { border-color: #388bfd; }
+    input[type="text"]::placeholder { color: #484f58; }
+
+    button {
+      background: #238636;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover:not(:disabled) { background: #2ea043; }
+    button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+
+    #status {
+      font-size: 0.85rem;
+      color: #8b949e;
+      margin-bottom: 16px;
+      min-height: 20px;
+    }
+
+    .finding {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; } }
+
+    .finding-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sev-critical { background: #5d0f0f; color: #ff7b72; }
+    .sev-high     { background: #3d1f00; color: #ffa657; }
+    .sev-medium   { background: #2d2200; color: #e3b341; }
+    .sev-low      { background: #12261e; color: #3fb950; }
+    .sev-info     { background: #0d1f2d; color: #58a6ff; }
+
+    .cat-badge { background: #21262d; color: #8b949e; }
+    .agent-badge { background: #1a1f2d; color: #6e76a0; }
+
+    .finding-location {
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.8rem;
+      color: #58a6ff;
+      margin-bottom: 8px;
+    }
+
+    .finding-desc {
+      font-size: 0.9rem;
+      color: #c9d1d9;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .finding-fix {
+      font-size: 0.85rem;
+      color: #8b949e;
+      border-top: 1px solid #21262d;
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+
+    .finding-fix strong { color: #6e7681; }
+
+    .confidence {
+      font-size: 0.75rem;
+      color: #484f58;
+      margin-left: auto;
+    }
+
+    .empty {
+      text-align: center;
+      color: #8b949e;
+      padding: 48px 0;
+      font-size: 0.95rem;
+    }
+
+    .error-msg {
+      background: #3d0f0f;
+      border: 1px solid #5d1f1f;
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: #ff7b72;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AutoReview</h1>
+    <p class="subtitle">Paste a GitHub PR URL to run an automated multi-agent review.</p>
+
+    <div class="input-row">
+      <input type="text" id="pr-url" placeholder="https://github.com/owner/repo/pull/123" />
+      <button id="btn" onclick="startReview()">Review PR</button>
+    </div>
+
+    <div id="status"></div>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    const SEV_ORDER = ["critical", "high", "medium", "low", "info"];
+
+    function sevClass(sev) {
+      return "sev-" + (sev || "info").toLowerCase();
+    }
+
+    function renderFinding(f) {
+      const fix = f.suggested_fix
+        ? `<div class="finding-fix"><strong>Fix:</strong> ${esc(f.suggested_fix)}</div>`
+        : "";
+
+      return `
+        <div class="finding">
+          <div class="finding-header">
+            <span class="badge ${sevClass(f.severity)}">${esc(f.severity)}</span>
+            <span class="badge cat-badge">${esc(f.category)}</span>
+            <span class="badge agent-badge">${esc(f.agent)}</span>
+            <span class="confidence">${Math.round(f.confidence * 100)}% confidence</span>
+          </div>
+          <div class="finding-location">${esc(f.file_path)} · lines ${f.start_line}–${f.end_line}</div>
+          <div class="finding-desc">${esc(f.description)}</div>
+          ${fix}
+        </div>`;
+    }
+
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function startReview() {
+      const url = document.getElementById("pr-url").value.trim();
+      if (!url) return;
+
+      const btn = document.getElementById("btn");
+      const status = document.getElementById("status");
+      const results = document.getElementById("results");
+
+      btn.disabled = true;
+      btn.textContent = "Reviewing…";
+      status.textContent = "Fetching diff and running agents…";
+      results.innerHTML = "";
+
+      const findings = [];
+
+      fetch("/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pr_url: url }),
+      }).then(resp => {
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        function read() {
+          reader.read().then(({ done, value }) => {
+            if (done) {
+              finalize(findings);
+              return;
+            }
+            buffer += decoder.decode(value, { stream: true });
+            const parts = buffer.split("\n\n");
+            buffer = parts.pop();
+
+            for (const part of parts) {
+              const eventLine = part.split("\n").find(l => l.startsWith("event:"));
+              const dataLine  = part.split("\n").find(l => l.startsWith("data:"));
+              if (!eventLine || !dataLine) continue;
+
+              const event = eventLine.slice(6).trim();
+              const data  = JSON.parse(dataLine.slice(5).trim());
+
+              if (event === "finding") {
+                findings.push(data);
+                status.textContent = `${findings.length} finding${findings.length !== 1 ? "s" : ""} so far…`;
+                results.insertAdjacentHTML("beforeend", renderFinding(data));
+              } else if (event === "done") {
+                // findings already rendered; finalize will sort and re-render
+                finalize(findings);
+              } else if (event === "error") {
+                status.textContent = "";
+                results.innerHTML = `<div class="error-msg">Error: ${esc(data.message)}</div>`;
+                btn.disabled = false;
+                btn.textContent = "Review PR";
+              }
+            }
+            read();
+          });
+        }
+        read();
+      }).catch(err => {
+        status.textContent = "";
+        results.innerHTML = `<div class="error-msg">Error: ${esc(err.message)}</div>`;
+        btn.disabled = false;
+        btn.textContent = "Review PR";
+      });
+    }
+
+    function finalize(findings) {
+      const btn = document.getElementById("btn");
+      const status = document.getElementById("status");
+      const results = document.getElementById("results");
+
+      btn.disabled = false;
+      btn.textContent = "Review PR";
+
+      if (findings.length === 0) {
+        status.textContent = "";
+        results.innerHTML = '<div class="empty">No findings — this PR looks clean.</div>';
+        return;
+      }
+
+      // Sort by severity then confidence, re-render
+      findings.sort((a, b) => {
+        const sa = SEV_ORDER.indexOf(a.severity.toLowerCase());
+        const sb = SEV_ORDER.indexOf(b.severity.toLowerCase());
+        if (sa !== sb) return sa - sb;
+        return b.confidence - a.confidence;
+      });
+
+      status.textContent = `${findings.length} finding${findings.length !== 1 ? "s" : ""} · sorted by severity`;
+      results.innerHTML = findings.map(renderFinding).join("");
+    }
+
+    // Allow Enter key to submit
+    document.getElementById("pr-url").addEventListener("keydown", e => {
+      if (e.key === "Enter") startReview();
+    });
+  </script>
+</body>
+</html>
